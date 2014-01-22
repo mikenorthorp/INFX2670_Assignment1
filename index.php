@@ -45,9 +45,10 @@ $thirdOption = "";
 // sanatize them
 if ($_SERVER["REQUEST_METHOD"] == "POST")
 {
-	$nameField = htmlspecialchars($_POST["name_field"]);
-	$likeField = htmlspecialchars($_POST["like_field"]);
-	$emailField = htmlspecialchars($_POST["email_field"]);
+	$nameField = filter_input(INPUT_POST, 'name_field', FILTER_SANITIZE_SPECIAL_CHARS);
+	$likeField = filter_input(INPUT_POST, 'like_field', FILTER_SANITIZE_SPECIAL_CHARS);
+	$emailField = filter_input(INPUT_POST, 'email_field', FILTER_SANITIZE_SPECIAL_CHARS);
+
 
 	// Check to make sure fields pass all validation
 
@@ -56,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		$nameError = "You must enter a name";
 		$nameField = "";
 		$emptyCheck = 1;
-		$errorsOccur += 1;
+		$errorsOccur++;
 	}
 
 	// Validate like field, must not be empty and contains validated in the text
@@ -64,17 +65,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		$likeError = "You must enter some text in this field";
 		$likeField = "";
 		$emptyCheck = 1;
-		$errorsOccur += 1;
+		$errorsOccur++;
 	} elseif(strpos($likeField,"validated") === false) {
 		$likeError = "This text area must contain the word validated";
-		$errorsOccur += 1;
+		$errorsOccur++;
 	}
 
 	// Check if radio button is selected for company
 	if (!isset($_POST['companies'])) {
 		$companyError = "Please select a favorite company";
 		$emptyCheck = 1;
-		$errorsOccur += 1;
+		$errorsOccur++;
 	} else {
 		// Save the state of the current checked radio button
 		if ($_POST['companies'] == "Google") {
@@ -90,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	if (!isset($_POST['browsers'])) {
 		$browserError = "Please select two favorite browsers";
 		$emptyCheck = 1;
-		$errorsOccur += 1;
+		$errorsOccur++;
 	} else {
 		// Sees which checkboxes are checked and records the number
 		foreach($_POST['browsers'] as $browser) {
@@ -111,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		if ($browserCheckedCount < 2) {
 			$browserError = "You MUST select at least two favorite browsers";
 			$emptyCheck = 1;
-			$errorsOccur += 1;	
+			$errorsOccur++;	
 		}
 	}
 
@@ -120,7 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	if (($_POST['time_per_day']) == "-SELECT AN OPTION-") {
 		$timePerDayError = "Please select a time from the dropdown";
 		$emptyCheck = 1;
-		$errorsOccur += 1;
+		$errorsOccur++;
 	} else {
 		$timePerDayField = $_POST['time_per_day'];
 		if($timePerDayField == "1-2 Hours") {
@@ -129,9 +130,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			$secondOption = 'selected="selected"';
 		} elseif($timePerDayField == "FOREVERRRR") {
 			$thirdOption = 'selected="selected"';
-		}
-		 
+		} 
 	}
+
+	// Validation for email check and email field
+
 
 
 	// If validation does not pass
