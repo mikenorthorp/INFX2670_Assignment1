@@ -20,6 +20,17 @@ $errorsOnPage = "";
 $displayNone = "";
 $resultsView = "display:none";
 
+// Checkbox variables
+$browserCheckedCount = 0;
+$chrome = "";
+$firefox = "";
+$safari = "";
+
+// Radio button variables
+$google = "";
+$microsoft = "";
+$apple = "";
+
 // If a form is submitted, set all variables to their entered inputs and 
 // sanatize them
 if ($_SERVER["REQUEST_METHOD"] == "POST")
@@ -47,6 +58,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		$errorsOccur += 1;
 	}
 
+	// Check if radio button is selected for company
+	if (!isset($_POST['companies'])) {
+		$companyError = "Please select a favorite company";
+		$emptyCheck = 1;
+		$errorsOccur += 1;
+	} else {
+		// Save the state of the current checked radio button
+		if ($_POST['companies'] == "Google") {
+			$google = "checked";
+		} elseif ($_POST['companies'] == "Microsoft") {
+			$microsoft = "checked";
+		} else if ($_POST['companies'] == "Apple") {
+			$apple = "checked"; 
+		}
+	}
+
+	// Validation for checkboxes, makes sure at least two are checked.
+	if (!isset($_POST['browsers'])) {
+		$browserError = "Please select two favorite browsers";
+		$emptyCheck = 1;
+		$errorsOccur += 1;
+	} else {
+		// Sees which checkboxes are checked and records the number
+		foreach($_POST['browsers'] as $browser) {
+			// Keeps the values if they are valid
+			if ($browser == "firefox") {
+				$firefox = "checked";
+				$browserCheckedCount += 1;
+			} elseif ($browser == "chrome") {
+				$chrome = "checked";
+				$browserCheckedCount += 1;
+			} elseif ($browser == "safari") {
+				$safari = "checked";
+				$browserCheckedCount += 1;
+			}
+		}
+
+		// Check if at least two browsers are checked
+		if ($browserCheckedCount < 2) {
+			$browserError = "You MUST select at least two favorite browsers";
+			$emptyCheck = 1;
+			$errorsOccur += 1;	
+		}
+	}
+
+	// Validation for 
+
+
 	// If validation does not pass
 	if ($errorsOccur > 0) {
 		$errorsOnPage = "There are " . $errorsOccur . " error(s) on the page";
@@ -55,13 +114,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		$resultsView = "";
 	}
 	
-}
-
-// This function sends an email with the form data to the user 
-// if the checkbox is selected and a valid email is entered.
-function send_email($message, $email)
-{
-
 }
 ?>
 
@@ -86,16 +138,16 @@ function send_email($message, $email)
 			<span class="error"><?php echo $likeError;?></span><br>
 
 			<p>Pick your favorite</p><br>
-			<input type="radio" name="companies" value="Google"> Google<br>
-			<input type="radio" name="companies" value="Microsoft"> Microsoft<br>
-			<input type="radio" name="companies" value="Apple"> Apple<br>
+			<input type="radio" name="companies" value="Google" <?php echo $google;?>> Google<br>
+			<input type="radio" name="companies" value="Microsoft" <?php echo $microsoft;?>> Microsoft<br>
+			<input type="radio" name="companies" value="Apple" <?php echo $apple;?>> Apple<br>
 			<span class="error"><?php echo $companyError;?></span><br>
 
 			
 			<p>Pick top two favorite browsers</p><br>
-			<input type="checkbox" name="browsers[]" value="Chrome"> Chrome<br>
-			<input type="checkbox" name="browsers[]" value="Firefox"> Firefox<br>
-			<input type="checkbox" name="browsers[]" value="Safari"> Safari<br>
+			<input type="checkbox" name="browsers[]" value="chrome" <?php echo $chrome;?>> Chrome<br>
+			<input type="checkbox" name="browsers[]" value="firefox" <?php echo $firefox;?>> Firefox<br>
+			<input type="checkbox" name="browsers[]" value="safari" <?php echo $safari;?>> Safari<br>
 			<span class="error"><?php echo $browserError;?></span><br>
 
 			<p>How long do you spend on the internet a day?</p>
