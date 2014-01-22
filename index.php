@@ -1,47 +1,126 @@
+<?php
+
+// Field values
+$nameField = "";
+$likeField = "";
+$emailField = "";
+
+// Error values, get written too when an error occurs
+$nameError = "";
+$likeError = "";
+$companyError = "";
+$browserError = "";
+$timePerDayError = "";
+$emailCheckError = "";
+$emailError = "";
+$someEmptyError = "";
+$emptyCheck = 0;
+$errorsOccur = 0;
+$errorsOnPage = "";
+$displayNone = "";
+$resultsView = "display:none";
+
+// If a form is submitted, set all variables to their entered inputs and 
+// sanatize them
+if ($_SERVER["REQUEST_METHOD"] == "POST")
+{
+	$nameField = htmlspecialchars($_POST["name_field"]);
+	$likeField = htmlspecialchars($_POST["like_field"]);
+	$emailField = htmlspecialchars($_POST["email_field"]);
+
+	// Check to make sure fields pass all validation
+
+	// Validate name field
+	if (empty($nameField)) {
+		$nameError = "You must enter a name";
+		$emptyCheck = 1;
+		$errorsOccur += 1;
+	}
+
+	// Validate like field, must not be empty and contains validated in the text
+	if (empty($likeField)) {
+		$likeError = "You must enter some text in this field";
+		$emptyCheck = 1;
+		$errorsOccur += 1;
+	} elseif(strpos($likeField,"validated") === false) {
+		$likeError = "This text area must contain the word validated";
+		$errorsOccur += 1;
+	}
+
+	// If validation does not pass
+	if ($errorsOccur > 0) {
+		$errorsOnPage = "There are " . $errorsOccur . " error(s) on the page";
+	} else { // Validation passes
+		$displayNone = 'style="display:none"';
+		$resultsView = "";
+	}
+	
+}
+
+// This function sends an email with the form data to the user 
+// if the checkbox is selected and a valid email is entered.
+function send_email($message, $email)
+{
+
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<title>Internet is Awesome</title>
+	<link rel="stylesheet" href="main.css" type="text/css">
 </head>
 <body>
 <div id="content">
 	<h1> INFX 2670 Assignment 1 - Mike Northorp </h1>
 	<div id="form">
-		<form method="post">
+		<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" <?php echo $displayNone;?>>
 			<h1> Internet is Awesome Survey </h1>
-			<p>Name:</p><input type="text" name="text_field" size=20> <br>
+			<p>Name:</p><input type="text" name="name_field" size=20>
+			<span class="error"><?php echo $nameError;?></span><br>
 
-			<p>Write why you like the internet</p><textarea name="text_area" cols=40 rows=8></textarea> <br>
+			<p>Write why you like the internet</p>
+			<textarea name="like_field" cols=40 rows=8></textarea> 
+			<span class="error"><?php echo $likeError;?></span><br>
 
 			<p>Pick your favorite</p><br>
-			<input type="radio" name="" value="Google"> Google<br>
-			<input type="radio" name="radio1" value="Microsoft"> Microsoft<br>
-			<input type="radio" name="radio1" value="Apple"> Apple<br>
+			<input type="radio" name="companies" value="Google"> Google<br>
+			<input type="radio" name="companies" value="Microsoft"> Microsoft<br>
+			<input type="radio" name="companies" value="Apple"> Apple<br>
+			<span class="error"><?php echo $companyError;?></span><br>
+
 			
 			<p>Pick top two favorite browsers</p><br>
-			<input type="checkbox" name="option1" value="Milk"> Chrome<br>
-			<input type="checkbox" name="option2" value="Butter"> Firefox<br>
-			<input type="checkbox" name="option3" value="Cheese"> Safari<br>
+			<input type="checkbox" name="browsers[]" value="Chrome"> Chrome<br>
+			<input type="checkbox" name="browsers[]" value="Firefox"> Firefox<br>
+			<input type="checkbox" name="browsers[]" value="Safari"> Safari<br>
+			<span class="error"><?php echo $browserError;?></span><br>
 
 			<p>How long do you spend on the internet a day?</p>
 			<select>
-			  <option value="volvo">2-10 Hours</option>
-			  <option value="saab">1-2 Hours</option>
-			  <option value="mercedes">FOREVERRRR</option>
+			  <option value="time_per_day">2-10 Hours</option>
+			  <option value="time_per_day">1-2 Hours</option>
+			  <option value="time_per_day">FOREVERRRR</option>
 			</select>
+			<span class="error"><?php echo $timePerDayError;?></span><br>
 
 			<p>If you wish to receive the submission as an email, enter email and check box below</p>
 			<div id="email_toggle">
-				<input type="checkbox" name="option1" value="send_email"> Send Email<br>
-				<input type="text" name="text_field" size=20> <br>
+				<input type="checkbox" name="email_check" value="send_email"> Send Email
+				<span class="error"><?php echo $emailCheckError;?></span><br>
+				<input type="text" name="email_field" size=20>
+				<span class="error"><?php echo $emailError;?></span><br>
 			</div>
 
 			<input type="submit" value="Submit">
+			<span class="error"><?php echo $someEmptyError;?></span>
+			<span class="error"><?php echo $errorsOnPage;?></span>
 		</form>
 	</div>
 
-	<div id="results" style="display:none">
+	<div id="results" style="<?php echo $resultsView;?>">
 		<h1>Results</h1>
 	</div>
 </div>
