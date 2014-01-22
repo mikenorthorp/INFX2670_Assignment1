@@ -5,6 +5,7 @@ $nameField = "";
 $likeField = "";
 $emailField = "";
 $timePerDayField = "";
+$companyField = "";
 
 // Error values, get written too when an error occurs
 $nameError = "";
@@ -22,6 +23,7 @@ $emptyCheck = 0;
 $errorsOccur = 0;
 $emailChecked = 0;
 $emailEmpty = 0;
+$fullyValidated = 0;
 
 // Views
 $displayNone = "";
@@ -82,32 +84,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		// Save the state of the current checked radio button
 		if ($_POST['companies'] == "Google") {
 			$google = "checked";
+			$companyField = "Google";
 		} elseif ($_POST['companies'] == "Microsoft") {
 			$microsoft = "checked";
-		} else if ($_POST['companies'] == "Apple") {
+			$companyField = "Microsoft";
+		} elseif ($_POST['companies'] == "Apple") {
 			$apple = "checked"; 
+			$companyField = "Apple";
 		}
 	}
 
 	// Validation for checkboxes, makes sure at least two are checked.
 	if (!isset($_POST['browsers'])) {
-		$browserError = "Please select two favorite browsers";
+		$browserError = "Please select at least two favorite browsers";
 		$emptyCheck = 1;
 		$errorsOccur++;
 	} else {
-		// Sees which checkboxes are checked and records the number
-		foreach($_POST['browsers'] as $browser) {
-			// Keeps the values if they are valid
-			if ($browser == "firefox") {
-				$firefox = "checked";
-				$browserCheckedCount += 1;
-			} elseif ($browser == "chrome") {
-				$chrome = "checked";
-				$browserCheckedCount += 1;
-			} elseif ($browser == "safari") {
-				$safari = "checked";
-				$browserCheckedCount += 1;
-			}
+		// Save the state of checked boxes and see how many are checked
+		if (in_array('firefox', $_POST['browsers'])) {
+		  $firefox = 'checked';
+		  $browserCheckedCount++;
+		}
+		if (in_array('chrome', $_POST['browsers'])) {
+		  $chrome = 'checked';
+		  $browserCheckedCount++;
+		}
+		if (in_array('safari', $_POST['browsers'])) {
+		  $safari = 'checked';
+		  $browserCheckedCount++;
 		}
 
 		// Check if at least two browsers are checked
@@ -120,12 +124,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 	// Validation for dropdown menu
 	// Check if radio button is selected for company
-	//TODO: fix check on dropdown
-	if (($_POST['time_per_day']) == "-SELECT AN OPTION-") {
+	 if (filter_input(INPUT_POST, 'time_per_day') == '-SELECT AN OPTION-') {
 		$timePerDayError = "Please select a time from the dropdown";
 		$emptyCheck = 1;
 		$errorsOccur++;
 	} else {
+		// See which field was selected for saving the state
 		$timePerDayField = $_POST['time_per_day'];
 		if($timePerDayField == "1-2 Hours") {
 			$firstOption = 'selected';
@@ -161,10 +165,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		}	
 	}
 
-	// Make sure the email field is sanatized
-	
-
-
 	// If validation does not pass
 	if ($errorsOccur > 0) {
 		$errorsOnPage = "There are {$errorsOccur} error(s) on the page";
@@ -172,10 +172,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			$someEmptyError = "You must fill out every field except email and email checkbox";
 		}
 	} else { // Validation passes
+		// Unhide results area and display results
 		$displayNone = 'style="display:none"';
 		$resultsView = "";
+		$fullyValidated = 1;
+
+		// Appened or save to file
+		$file = "surveyResults.txt"; 
+		// Create for the results above
+		$content = "Internet Survey Submission\n";
+		$content .= "Name: {$nameField}\n";
+		$content .= "Internet Likes: {$likeField}\n";
+		$content .= "Favorite Company: {$companyField}\n";
+
+		// Create list of browsers
+		$browser = "";
+		if(!empty($chrome)) {
+			$browser .= "Chrome ";
+		}
+		if(!empty($firefox)) {
+			$browser .= "Firefox ";
+		}
+		if(!empty($safari)) {
+			$browser .= "Safari ";
+		}
+		$content .= "Favorite Browsers: {$browser}\n";
+		// Time spent per day field
+		$content .= "Time Spent On Internet Per Day: {$timePerDayField}\n";
+
+		// Check to display message that an email was sent
+		if($emailChecked == 1) {
+			$content .= "Email sent to {$emailField} with results\n";
+		}
+
+		// Save email content before adding divider
+		$emailContent = $content;
+		// End divider for file
+		$content .= "---------------------------------------------------\n\n";
+
+		// Write contents to file, append if already data inside, and lock file from being changed while writing
+		file_put_contents($file, $content, FILE_APPEND | LOCK_EX);
+
+		// Check if we need to send an email
+		if($emailChecked == 1) {
+			$subject = 'Internet Survey Results';
+			$message = "Here are your internet survey results!\n\n";
+			$message .= $emailContent;
+
+			// Send the mail
+			mail($emailField, $subject, $message);
+		}
 	}
-	
 }
 ?>
 
@@ -206,7 +253,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			<span class="error"><?php echo $companyError ?></span><br>
 
 			
-			<p>Pick top two favorite browsers</p>
+			<p>Pick at least two favorite browsers</p>
 			<input type="checkbox" name="browsers[]" value="chrome" <?php echo $chrome ?>> Chrome<br>
 			<input type="checkbox" name="browsers[]" value="firefox" <?php echo $firefox ?>> Firefox<br>
 			<input type="checkbox" name="browsers[]" value="safari" <?php echo $safari ?>> Safari<br>
@@ -236,7 +283,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	</div>
 
 	<div id="results" style="<?php echo $resultsView ?>">
-		<h1>Results</h1>
+		<h1>Internet is Awesome Results</h1>
+		<?php if($fullyValidated == 1) : ?>
+			<div id="name-result">
+				<h3>Name</h3>
+				<p><?php echo $nameField ?></p>
+			</div>
+			<div id="likes-result">
+				<h3>Internet Likes</h3>
+			 	<p><?php echo $likeField ?></p>
+			 </div>
+			<div id="company-result">
+				<h3>Favorite Company</h3>
+				<p><?php echo $companyField ?></p>
+			</div>
+			<div id="browser-result">
+				<h3>Favorite Browsers</h3>
+				<ul>
+				<?php if(!empty($chrome)) echo "<li>Chrome</li>" ?>
+				<?php if(!empty($firefox)) echo "<li>Firefox</li>" ?>
+				<?php if(!empty($safari)) echo "<li>Safari</li>" ?>
+				</ul>
+			</div>
+			<div id="time-results">
+				<h3> Time Spent On Internet Per Day </h3>
+				<p><?php echo $timePerDayField ?></p>
+			</div>
+			<?php if($emailChecked == 1) : ?>
+			<div id="email-results">
+				<p>Email sent to <?php echo $emailField ?> with results</p>
+			</div>
+			<?php endif; ?>
+		<?php endif; ?>
 	</div>
 </div>
 
