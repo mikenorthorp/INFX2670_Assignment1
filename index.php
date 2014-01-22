@@ -212,6 +212,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 		// Write contents to file, append if already data inside, and lock file from being changed while writing
 		file_put_contents($file, $content, FILE_APPEND | LOCK_EX);
+		// Make sure it is readable by all users
+		chmod($file, 0644);
 
 		// Check if we need to send an email
 		if($emailChecked == 1) {
@@ -312,6 +314,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			<?php if($emailChecked == 1) : ?>
 			<div id="email-results">
 				<p>Email sent to <?php echo $emailField ?> with results</p>
+			</div>
+			<div id="file-results">
+				<p>File saved to /surveyResults.txt</p>
 			</div>
 			<?php endif; ?>
 		<?php endif; ?>
