@@ -14,9 +14,13 @@ $timePerDayError = "";
 $emailCheckError = "";
 $emailError = "";
 $someEmptyError = "";
+$errorsOnPage = "";
+
+// Checks and counters
 $emptyCheck = 0;
 $errorsOccur = 0;
-$errorsOnPage = "";
+
+// Views
 $displayNone = "";
 $resultsView = "display:none";
 
@@ -44,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	// Validate name field
 	if (empty($nameField)) {
 		$nameError = "You must enter a name";
+		$nameField = "";
 		$emptyCheck = 1;
 		$errorsOccur += 1;
 	}
@@ -51,6 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	// Validate like field, must not be empty and contains validated in the text
 	if (empty($likeField)) {
 		$likeError = "You must enter some text in this field";
+		$likeField = "";
 		$emptyCheck = 1;
 		$errorsOccur += 1;
 	} elseif(strpos($likeField,"validated") === false) {
@@ -109,6 +115,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	// If validation does not pass
 	if ($errorsOccur > 0) {
 		$errorsOnPage = "There are " . $errorsOccur . " error(s) on the page";
+		if($emptyCheck == 1) {
+			$someEmptyError = "You must fill out every field except email and email checkbox";
+		}
 	} else { // Validation passes
 		$displayNone = 'style="display:none"';
 		$resultsView = "";
@@ -130,11 +139,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	<div id="form">
 		<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" <?php echo $displayNone;?>>
 			<h1> Internet is Awesome Survey </h1>
-			<p>Name:</p><input type="text" name="name_field" size=20>
+			<p>Name:</p><input type="text" name="name_field" size=20 value="<?php echo $nameField;?>">
 			<span class="error"><?php echo $nameError;?></span><br>
 
 			<p>Write why you like the internet</p>
-			<textarea name="like_field" cols=40 rows=8></textarea> 
+			<textarea name="like_field" cols=40 rows=8><?php echo $likeField;?></textarea> 
 			<span class="error"><?php echo $likeError;?></span><br>
 
 			<p>Pick your favorite</p><br>
@@ -167,7 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			</div>
 
 			<input type="submit" value="Submit">
-			<span class="error"><?php echo $someEmptyError;?></span>
+			<span class="error"><?php echo $someEmptyError;?></span><br>
 			<span class="error"><?php echo $errorsOnPage;?></span>
 		</form>
 	</div>
