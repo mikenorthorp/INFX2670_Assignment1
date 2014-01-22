@@ -125,11 +125,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	} else {
 		$timePerDayField = $_POST['time_per_day'];
 		if($timePerDayField == "1-2 Hours") {
-			$firstOption = 'selected="selected"';
+			$firstOption = 'selected';
 		} elseif($timePerDayField == "2-10 Hours") {
-			$secondOption = 'selected="selected"';
+			$secondOption = 'selected';
 		} elseif($timePerDayField == "FOREVERRRR") {
-			$thirdOption = 'selected="selected"';
+			$thirdOption = 'selected';
 		} 
 	}
 
@@ -139,7 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 	// If validation does not pass
 	if ($errorsOccur > 0) {
-		$errorsOnPage = "There are " . $errorsOccur . " error(s) on the page";
+		$errorsOnPage = "There are {$errorsOccur} error(s) on the page";
 		if($emptyCheck == 1) {
 			$someEmptyError = "You must fill out every field except email and email checkbox";
 		}
