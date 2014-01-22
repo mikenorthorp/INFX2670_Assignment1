@@ -4,6 +4,7 @@
 $nameField = "";
 $likeField = "";
 $emailField = "";
+$timePerDayField = "";
 
 // Error values, get written too when an error occurs
 $nameError = "";
@@ -34,6 +35,11 @@ $safari = "";
 $google = "";
 $microsoft = "";
 $apple = "";
+
+// Selected variables
+$firstOption = "";
+$secondOption = "";
+$thirdOption = "";
 
 // If a form is submitted, set all variables to their entered inputs and 
 // sanatize them
@@ -109,7 +115,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		}
 	}
 
-	// Validation for 
+	// Validation for dropdown menu
+	// Check if radio button is selected for company
+	if (($_POST['time_per_day']) == "-SELECT AN OPTION-") {
+		$timePerDayError = "Please select a time from the dropdown";
+		$emptyCheck = 1;
+		$errorsOccur += 1;
+	} else {
+		$timePerDayField = $_POST['time_per_day'];
+		if($timePerDayField == "1-2 Hours") {
+			$firstOption = 'selected="selected"';
+		} elseif($timePerDayField == "2-10 Hours") {
+			$secondOption = 'selected="selected"';
+		} elseif($timePerDayField == "FOREVERRRR") {
+			$thirdOption = 'selected="selected"';
+		}
+		 
+	}
 
 
 	// If validation does not pass
@@ -160,10 +182,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			<span class="error"><?php echo $browserError;?></span><br>
 
 			<p>How long do you spend on the internet a day?</p>
-			<select>
-			  <option value="time_per_day">2-10 Hours</option>
-			  <option value="time_per_day">1-2 Hours</option>
-			  <option value="time_per_day">FOREVERRRR</option>
+			<select name="time_per_day">
+			  <option name="time_per_day" value="-SELECT AN OPTION-">-SELECT AN OPTION-</option>
+			  <option name="time_per_day" value="1-2 Hours" <?php echo $firstOption;?>>1-2 Hours</option>
+			  <option name="time_per_day" value="2-10 Hours" <?php echo $secondOption;?>>2-10 Hours</option>
+			  <option name="time_per_day" value="FOREVERRRR" <?php echo $thirdOption;?>>FOREVERRRR</option>
 			</select>
 			<span class="error"><?php echo $timePerDayError;?></span><br>
 
