@@ -168,14 +168,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			<textarea name="like_field" cols=40 rows=8><?php echo $likeField;?></textarea> 
 			<span class="error"><?php echo $likeError;?></span><br>
 
-			<p>Pick your favorite</p><br>
+			<p>Pick your favorite</p>
 			<input type="radio" name="companies" value="Google" <?php echo $google;?>> Google<br>
 			<input type="radio" name="companies" value="Microsoft" <?php echo $microsoft;?>> Microsoft<br>
 			<input type="radio" name="companies" value="Apple" <?php echo $apple;?>> Apple<br>
 			<span class="error"><?php echo $companyError;?></span><br>
 
 			
-			<p>Pick top two favorite browsers</p><br>
+			<p>Pick top two favorite browsers</p>
 			<input type="checkbox" name="browsers[]" value="chrome" <?php echo $chrome;?>> Chrome<br>
 			<input type="checkbox" name="browsers[]" value="firefox" <?php echo $firefox;?>> Firefox<br>
 			<input type="checkbox" name="browsers[]" value="safari" <?php echo $safari;?>> Safari<br>
