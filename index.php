@@ -169,7 +169,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	if ($errorsOccur > 0) {
 		$errorsOnPage = "There are {$errorsOccur} error(s) on the page";
 		if($emptyCheck == 1) {
-			$someEmptyError = "You must fill out every field except email and email checkbox";
+			$someEmptyError = "You MUST fill out every field except email and email checkbox";
 		}
 	} else { // Validation passes
 		// Unhide results area and display results
@@ -237,49 +237,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 </head>
 <body>
 <div id="content">
-	<h1> INFX 2670 Assignment 1 - Mike Northorp </h1>
+	<h1> INFX 2670 Assignment 1 - Michael Northorp </h1>
 	<div id="form">
 		<form method="post" <?php echo $displayNone ?>>
 			<h1> Internet is Awesome Survey </h1>
-			<p>Name:</p><input type="text" name="name_field" size=20 value="<?php echo $nameField ?>">
-			<span class="error"><?php echo $nameError ?></span><br>
 
-			<p>Write why you like the internet</p>
-			<textarea name="like_field" cols=40 rows=8><?php echo $likeField ?></textarea> 
-			<span class="error"><?php echo $likeError ?></span><br>
+			<div id="name" <?php if(!empty($nameError)) { echo 'class="errorOutline"'; } ?>>
+				<p>Name</p>
+				<input type="text" name="name_field" size=20 value="<?php echo $nameField ?>"><br>
+				<span class="error"><?php echo $nameError ?></span><br>
+			</div>
 
-			<p>Pick your favorite</p>
-			<input type="radio" name="companies" value="Google" <?php echo $google ?>> Google<br>
-			<input type="radio" name="companies" value="Microsoft" <?php echo $microsoft ?>> Microsoft<br>
-			<input type="radio" name="companies" value="Apple" <?php echo $apple ?>> Apple<br>
-			<span class="error"><?php echo $companyError ?></span><br>
+			<div id="likes" <?php if(!empty($likeError)) { echo 'class="errorOutline"'; } ?>>
+				<p>Write why you like the internet</p>
+				<textarea name="like_field" cols=40 rows=5><?php echo $likeField ?></textarea><br> 
+				<span class="error"><?php echo $likeError ?></span>
+			</div>
 
-			
-			<p>Pick at least two favorite browsers</p>
-			<input type="checkbox" name="browsers[]" value="chrome" <?php echo $chrome ?>> Chrome<br>
-			<input type="checkbox" name="browsers[]" value="firefox" <?php echo $firefox ?>> Firefox<br>
-			<input type="checkbox" name="browsers[]" value="safari" <?php echo $safari ?>> Safari<br>
-			<span class="error"><?php echo $browserError ?></span><br>
+			<div id="company" <?php if(!empty($companyError)) { echo 'class="errorOutline"'; } ?>>
+				<p>Pick your favorite</p>
+				<input type="radio" name="companies" value="Google" <?php echo $google ?>> Google<br>
+				<input type="radio" name="companies" value="Microsoft" <?php echo $microsoft ?>> Microsoft<br>
+				<input type="radio" name="companies" value="Apple" <?php echo $apple ?>> Apple<br>
+				<span class="error"><?php echo $companyError ?></span><br>
+			</div>
 
-			<p>How long do you spend on the internet a day?</p>
-			<select name="time_per_day">
-			  <option name="time_per_day" value="-SELECT AN OPTION-">-SELECT AN OPTION-</option>
-			  <option name="time_per_day" value="1-2 Hours" <?php echo $firstOption ?>>1-2 Hours</option>
-			  <option name="time_per_day" value="2-10 Hours" <?php echo $secondOption ?>>2-10 Hours</option>
-			  <option name="time_per_day" value="FOREVERRRR" <?php echo $thirdOption ?>>FOREVERRRR</option>
-			</select>
-			<span class="error"><?php echo $timePerDayError ?></span><br>
+			<div id="browser" <?php if(!empty($browserError)) { echo 'class="errorOutline"'; } ?>>
+				<p>Pick at least two favorite browsers</p>
+				<input type="checkbox" name="browsers[]" value="chrome" <?php echo $chrome ?>> Chrome<br>
+				<input type="checkbox" name="browsers[]" value="firefox" <?php echo $firefox ?>> Firefox<br>
+				<input type="checkbox" name="browsers[]" value="safari" <?php echo $safari ?>> Safari<br>
+				<span class="error"><?php echo $browserError ?></span>
+			</div>
 
-			<p>If you wish to receive the submission as an email, enter email and check box below</p>
-			<div id="email_toggle">
+			<div id="time" <?php if(!empty($timePerDayError)) { echo 'class="errorOutline"'; } ?>>
+				<p>How long do you spend on the internet a day?</p>
+				<select name="time_per_day">
+				  <option name="time_per_day" value="-SELECT AN OPTION-">-SELECT AN OPTION-</option>
+				  <option name="time_per_day" value="1-2 Hours" <?php echo $firstOption ?>>1-2 Hours</option>
+				  <option name="time_per_day" value="2-10 Hours" <?php echo $secondOption ?>>2-10 Hours</option>
+				  <option name="time_per_day" value="FOREVERRRR" <?php echo $thirdOption ?>>FOREVERRRR</option>
+				</select>
+				<br>
+				<span class="error"><?php echo $timePerDayError ?></span>
+			</div>
+
+			<div id="email" <?php if(!empty($emailCheckError) || !empty($emailError)) { echo 'class="errorOutline"'; } ?>>
+				<p>If you wish to receive the submission as an email, enter email and check box below</p>
 				<input type="checkbox" name="email_check" value="send_email" <?php if($emailChecked == 1) { echo "checked"; } ?>> Send Email
 				<span class="error"><?php echo $emailCheckError ?></span><br>
 				<input type="text" name="email_field" size=20 value="<?php echo $emailField ?>">
 				<span class="error"><?php echo $emailError ?></span><br>
 			</div>
 
-			<input type="submit" value="Submit">
-			<span class="error"><?php echo $someEmptyError ?></span><br>
+			<input type="submit" value="Submit" id="btn">
+			<br><span class="error"><?php echo $someEmptyError ?></span><br>
 			<span class="error"><?php echo $errorsOnPage ?></span>
 		</form>
 	</div>
