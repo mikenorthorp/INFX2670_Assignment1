@@ -20,23 +20,25 @@ $errorsOnPage = "";
 // Checks and counters
 $emptyCheck = 0;
 $errorsOccur = 0;
+$emailChecked = 0;
+$emailEmpty = 0;
 
 // Views
 $displayNone = "";
 $resultsView = "display:none";
 
-// Checkbox variables
+// Checkbox values
 $browserCheckedCount = 0;
 $chrome = "";
 $firefox = "";
 $safari = "";
 
-// Radio button variables
+// Radio button values
 $google = "";
 $microsoft = "";
 $apple = "";
 
-// Selected variables
+// Selected time values
 $firstOption = "";
 $secondOption = "";
 $thirdOption = "";
@@ -118,6 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 	// Validation for dropdown menu
 	// Check if radio button is selected for company
+	//TODO: fix check on dropdown
 	if (($_POST['time_per_day']) == "-SELECT AN OPTION-") {
 		$timePerDayError = "Please select a time from the dropdown";
 		$emptyCheck = 1;
@@ -134,7 +137,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	}
 
 	// Validation for email check and email field
+	if(!empty($_POST['email_check'])) {
+		// We know the email is checked so check validation on email text field
+		$emailChecked = 1;
+	}
 
+	// Check if email field is empty and write error if box is checked
+	if(empty($emailField)) {
+		$emailEmpty = 1;
+		if($emailChecked == 1) {
+			$emailCheckError = "You must enter an email or uncheck the send email box";
+			$emptyCheck = 1;
+			$errorsOccur++;	
+		}
+	} else {
+		// Check if not valid and write an error only if the toggle is checked
+		if($emailChecked == 1) {
+			if (!filter_var($emailField, FILTER_VALIDATE_EMAIL)) {
+				$emailError = "Please enter a valid email or uncheck above box";
+				$errorsOccur++;	
+				$emailField = "";
+			}
+		}	
+	}
+
+	// Make sure the email field is sanatized
+	
 
 
 	// If validation does not pass
@@ -162,52 +190,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 <div id="content">
 	<h1> INFX 2670 Assignment 1 - Mike Northorp </h1>
 	<div id="form">
-		<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" <?php echo $displayNone;?>>
+		<form method="post" <?php echo $displayNone ?>>
 			<h1> Internet is Awesome Survey </h1>
-			<p>Name:</p><input type="text" name="name_field" size=20 value="<?php echo $nameField;?>">
-			<span class="error"><?php echo $nameError;?></span><br>
+			<p>Name:</p><input type="text" name="name_field" size=20 value="<?php echo $nameField ?>">
+			<span class="error"><?php echo $nameError ?></span><br>
 
 			<p>Write why you like the internet</p>
-			<textarea name="like_field" cols=40 rows=8><?php echo $likeField;?></textarea> 
-			<span class="error"><?php echo $likeError;?></span><br>
+			<textarea name="like_field" cols=40 rows=8><?php echo $likeField ?></textarea> 
+			<span class="error"><?php echo $likeError ?></span><br>
 
 			<p>Pick your favorite</p>
-			<input type="radio" name="companies" value="Google" <?php echo $google;?>> Google<br>
-			<input type="radio" name="companies" value="Microsoft" <?php echo $microsoft;?>> Microsoft<br>
-			<input type="radio" name="companies" value="Apple" <?php echo $apple;?>> Apple<br>
-			<span class="error"><?php echo $companyError;?></span><br>
+			<input type="radio" name="companies" value="Google" <?php echo $google ?>> Google<br>
+			<input type="radio" name="companies" value="Microsoft" <?php echo $microsoft ?>> Microsoft<br>
+			<input type="radio" name="companies" value="Apple" <?php echo $apple ?>> Apple<br>
+			<span class="error"><?php echo $companyError ?></span><br>
 
 			
 			<p>Pick top two favorite browsers</p>
-			<input type="checkbox" name="browsers[]" value="chrome" <?php echo $chrome;?>> Chrome<br>
-			<input type="checkbox" name="browsers[]" value="firefox" <?php echo $firefox;?>> Firefox<br>
-			<input type="checkbox" name="browsers[]" value="safari" <?php echo $safari;?>> Safari<br>
-			<span class="error"><?php echo $browserError;?></span><br>
+			<input type="checkbox" name="browsers[]" value="chrome" <?php echo $chrome ?>> Chrome<br>
+			<input type="checkbox" name="browsers[]" value="firefox" <?php echo $firefox ?>> Firefox<br>
+			<input type="checkbox" name="browsers[]" value="safari" <?php echo $safari ?>> Safari<br>
+			<span class="error"><?php echo $browserError ?></span><br>
 
 			<p>How long do you spend on the internet a day?</p>
 			<select name="time_per_day">
 			  <option name="time_per_day" value="-SELECT AN OPTION-">-SELECT AN OPTION-</option>
-			  <option name="time_per_day" value="1-2 Hours" <?php echo $firstOption;?>>1-2 Hours</option>
-			  <option name="time_per_day" value="2-10 Hours" <?php echo $secondOption;?>>2-10 Hours</option>
-			  <option name="time_per_day" value="FOREVERRRR" <?php echo $thirdOption;?>>FOREVERRRR</option>
+			  <option name="time_per_day" value="1-2 Hours" <?php echo $firstOption ?>>1-2 Hours</option>
+			  <option name="time_per_day" value="2-10 Hours" <?php echo $secondOption ?>>2-10 Hours</option>
+			  <option name="time_per_day" value="FOREVERRRR" <?php echo $thirdOption ?>>FOREVERRRR</option>
 			</select>
-			<span class="error"><?php echo $timePerDayError;?></span><br>
+			<span class="error"><?php echo $timePerDayError ?></span><br>
 
 			<p>If you wish to receive the submission as an email, enter email and check box below</p>
 			<div id="email_toggle">
-				<input type="checkbox" name="email_check" value="send_email"> Send Email
-				<span class="error"><?php echo $emailCheckError;?></span><br>
-				<input type="text" name="email_field" size=20>
-				<span class="error"><?php echo $emailError;?></span><br>
+				<input type="checkbox" name="email_check" value="send_email" <?php if($emailChecked == 1) { echo "checked"; } ?>> Send Email
+				<span class="error"><?php echo $emailCheckError ?></span><br>
+				<input type="text" name="email_field" size=20 value="<?php echo $emailField ?>">
+				<span class="error"><?php echo $emailError ?></span><br>
 			</div>
 
 			<input type="submit" value="Submit">
-			<span class="error"><?php echo $someEmptyError;?></span><br>
-			<span class="error"><?php echo $errorsOnPage;?></span>
+			<span class="error"><?php echo $someEmptyError ?></span><br>
+			<span class="error"><?php echo $errorsOnPage ?></span>
 		</form>
 	</div>
 
-	<div id="results" style="<?php echo $resultsView;?>">
+	<div id="results" style="<?php echo $resultsView ?>">
 		<h1>Results</h1>
 	</div>
 </div>
