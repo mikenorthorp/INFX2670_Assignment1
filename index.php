@@ -333,7 +333,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			<div id="file-results">
 				<p>File saved to /surveyResults.txt</p>
 			</div>
-		<?php endif; ?>
+			<?php endif; ?>
 	</div>
 </div>
 
