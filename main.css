@@ -3,11 +3,13 @@ body {
 	background-image: url(debut_light.png);
 }
 
+/* Set margins for divs */
 div {
 	margin-top: 3px;
 	margin-bottom: 3px;
 }
 
+/* Paragraph styling */
 p {
 	font-size: 17px;
 }
@@ -37,6 +39,7 @@ input[type=submit] {
 	border-color: #ccc;
 }
 
+/* On hover of submit button */
 input[type=submit]:hover {
 	color: #333;
 	background-color: #ebebeb;

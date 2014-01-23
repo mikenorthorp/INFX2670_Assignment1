@@ -1,5 +1,9 @@
 <?php
 
+/* -------------------------- */
+/* START VARIABLE DECLERATION */
+/* -------------------------- */
+
 // Set up define values
 define('RESULTS_FILE', 'surveyResults.txt');
 
@@ -48,7 +52,11 @@ $firstOption = "";
 $secondOption = "";
 $thirdOption = "";
 
-// If a form is submitted, santize user input fields
+/* -------------------------- */
+/*   END VARIABLE DECLERATION */
+/* -------------------------- */
+
+// If a post request is submitted, santize user input fields for the form
 if ($_SERVER["REQUEST_METHOD"] == "POST")
 {
 	$nameField = htmlspecialchars(filter_input(INPUT_POST, 'name_field'));
@@ -56,7 +64,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$emailField = htmlspecialchars(filter_input(INPUT_POST, 'email_field'));
 	$timePerDayField = htmlspecialchars(filter_input(INPUT_POST, 'time_per_day'));
 
-	// Check to make sure fields pass all validation
+	/* ---------------- */
+	/* START VALIDATION */
+	/* ---------------- */
 
 	// Validate name field
 	if (empty($nameField)) {
@@ -166,6 +176,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		}	
 	}
 
+	/* ---------------- */
+	/*  END VALIDATION  */
+	/* ---------------- */
+
+
+	/* -------------------------- */
+	/* START POST VALIDATION CODE */
+	/* -------------------------- */
+
 	// If validation does not pass
 	if ($errorsOccur > 0) {
 		$errorsOnPage = "There are {$errorsOccur} error(s) on the page";
@@ -228,6 +247,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			mail($emailField, $subject, $message);
 		}
 	}
+
+	/* -------------------------- */
+	/*   END POST VALIDATION CODE */
+	/* -------------------------- */
 }
 ?>
 <!DOCTYPE html>
