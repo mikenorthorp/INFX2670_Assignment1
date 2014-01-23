@@ -181,7 +181,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		// Create for the results above
 		$content = "Internet Survey Submission\n";
 		$content .= "Name: {$nameField}\n";
-		echo $likeField;
 		$content .= "Internet Likes: {$likeField}\n";
 		$content .= "Favorite Company: {$companyField}\n";
 
