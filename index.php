@@ -1,5 +1,8 @@
 <?php
 
+// Set up define values
+define('RESULTS_FILE', 'surveyResults.txt');
+
 // Field values
 $nameField = "";
 $likeField = "";
@@ -176,8 +179,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		$resultsView = "";
 		$fullyValidated = 1;
 
-		// Appened or save to file
-		$file = "surveyResults.txt"; 
 		// Create for the results above
 		$content = "Internet Survey Submission\n";
 		$content .= "Name: {$nameField}\n";
@@ -212,9 +213,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		$content .= "---------------------------------------------------\n\n";
 
 		// Write contents to file, append if already data inside, and lock file from being changed while writing
-		file_put_contents($file, $content, FILE_APPEND | LOCK_EX);
+		file_put_contents(RESULTS_FILE, $content, FILE_APPEND | LOCK_EX);
 		// Make sure it is readable by all users
-		chmod($file, 0644);
+		chmod(RESULTS_FILE, 0644);
 
 		// Check if we need to send an email
 		if($emailChecked == 1) {
