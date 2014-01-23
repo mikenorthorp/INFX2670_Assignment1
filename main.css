@@ -15,9 +15,9 @@ p {
 /* Taken from bootstrap button, slightly modifed */
 input[type=submit] {
 	display: inline-block;
-	padding: 6px 12px;
+	padding: 6px 15px;
 	margin-bottom: 0;
-	font-size: 14px;
+	font-size: 25px;
 	font-weight: normal;
 	line-height: 1.428571429;
 	text-align: center;
