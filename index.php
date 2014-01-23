@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$nameField = filter_input(INPUT_POST, 'name_field', FILTER_SANITIZE_SPECIAL_CHARS);
 	$likeField = filter_input(INPUT_POST, 'like_field', FILTER_SANITIZE_SPECIAL_CHARS);
 	$emailField = filter_input(INPUT_POST, 'email_field', FILTER_SANITIZE_SPECIAL_CHARS);
-
+	$timePerDayField = filter_input(INPUT_POST, 'time_per_day', FILTER_SANITIZE_SPECIAL_CHARS);
 
 	// Check to make sure fields pass all validation
 
@@ -130,7 +130,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		$errorsOccur++;
 	} else {
 		// See which field was selected for saving the state
-		$timePerDayField = $_POST['time_per_day'];
 		if($timePerDayField == "1-2 Hours") {
 			$firstOption = 'selected';
 		} elseif($timePerDayField == "2-10 Hours") {
@@ -186,16 +185,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		$content .= "Favorite Company: {$companyField}\n";
 
 		// Create list of browsers
-		$browser = "";
+		$browser = array();
 		if(!empty($chrome)) {
-			$browser .= "Chrome ";
+			$browser[] = "Chrome";
 		}
 		if(!empty($firefox)) {
-			$browser .= "Firefox ";
+			$browser[] = "Firefox";
 		}
 		if(!empty($safari)) {
-			$browser .= "Safari ";
+			$browser[] = "Safari";
 		}
+		$browser = implode(', ', $browser);
+
 		$content .= "Favorite Browsers: {$browser}\n";
 		// Time spent per day field
 		$content .= "Time Spent On Internet Per Day: {$timePerDayField}\n";
@@ -243,13 +244,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			<h1> Internet is Awesome Survey </h1>
 
 			<div id="name" <?php if(!empty($nameError)) { echo 'class="errorOutline"'; } ?>>
-				<label for="name_field">Name</label>
+				<p><label for="name_field">Name</label></p>
 				<input type="text" id="name_field" name="name_field" size=20 value="<?php echo $nameField ?>"><br>
 				<span class="error"><?php echo $nameError ?></span><br>
 			</div>
 
 			<div id="likes" <?php if(!empty($likeError)) { echo 'class="errorOutline"'; } ?>>
-				<label for="like_field">Write About Why You Like The Internet</label>
+				<p><label for="like_field">Write About Why You Like The Internet</label></p>
 				<textarea id="like_field" name="like_field" cols=40 rows=5><?php echo $likeField ?></textarea><br> 
 				<span class="error"><?php echo $likeError ?></span>
 			</div>
@@ -271,7 +272,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			</div>
 
 			<div id="time" <?php if(!empty($timePerDayError)) { echo 'class="errorOutline"'; } ?>>
-				<label for="time_per_day">How long do you spend on the internet a day?</label>
+				<p><label for="time_per_day">How long do you spend on the internet a day?</label></p>
 				<select id="time_per_day" name="time_per_day">
 				  <option name="time_per_day" value="-SELECT AN OPTION-">-SELECT AN OPTION-</option>
 				  <option name="time_per_day" value="1-2 Hours" <?php echo $firstOption ?>>1-2 Hours</option>
@@ -284,7 +285,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 			<div id="email" <?php if(!empty($emailCheckError) || !empty($emailError)) { echo 'class="errorOutline"'; } ?>>
 				<p>If you wish to receive the submission as an email, enter email and check box below</p>
-				<input id="email_check" type="checkbox" name="email_check" value="send_email" <?php if($emailChecked == 1) { echo "checked"; } ?>> Send Email
+				<label><input id="email_check" type="checkbox" name="email_check" value="send_email" <?php if($emailChecked == 1) { echo "checked"; } ?>>Send Email</label>
 				<span class="error"><?php echo $emailCheckError ?></span><br>
 				<input id="email_field" type="text" name="email_field" size=20 value="<?php echo $emailField ?>">
 				<span class="error"><?php echo $emailError ?></span><br>
@@ -327,10 +328,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			<div id="email-results">
 				<p>Email sent to <?php echo $emailField ?> with results</p>
 			</div>
+			<?php endif; ?>
 			<div id="file-results">
 				<p>File saved to /surveyResults.txt</p>
 			</div>
-			<?php endif; ?>
 		<?php endif; ?>
 	</div>
 </div>
