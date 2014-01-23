@@ -72,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		$likeField = "";
 		$emptyCheck = 1;
 		$errorsOccur++;
-	} elseif(strpos($likeField,"validated") === false) {
+	} elseif(strpos($likeField, "validated") === false) {
 		$likeError = "This text area must contain the word validated";
 		$errorsOccur++;
 	}
@@ -230,7 +230,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	}
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -247,20 +246,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 			<div id="name" <?php if(!empty($nameError)) { echo 'class="errorOutline"'; } ?>>
 				<p><label for="name_field">Name</label></p>
-				<input type="text" id="name_field" name="name_field" size=20 value="<?php echo $nameField ?>"><br>
+				<input type="text" id="name_field" name="name_field" size="20" value="<?php echo $nameField ?>"><br>
 				<span class="error"><?php echo $nameError ?></span><br>
 			</div>
 
 			<div id="likes" <?php if(!empty($likeError)) { echo 'class="errorOutline"'; } ?>>
 				<p><label for="like_field">Write About Why You Like The Internet</label></p>
-				<textarea id="like_field" name="like_field" cols=40 rows=5><?php echo $likeField ?></textarea><br> 
+				<textarea id="like_field" name="like_field" cols="40" rows="5"><?php echo $likeField ?></textarea><br> 
 				<span class="error"><?php echo $likeError ?></span>
 			</div>
 
 			<div id="company" <?php if(!empty($companyError)) { echo 'class="errorOutline"'; } ?>>
 				<p>Pick your favorite</p>
 				<label><input type="radio" name="companies" value="Google" <?php echo $google ?>> Google </label><br>
-				<label><input type="radio" name="companies" value="Microsoft" <?php echo $microsoft ?>> Microsoft</lable><br>
+				<label><input type="radio" name="companies" value="Microsoft" <?php echo $microsoft ?>> Microsoft</label><br>
 				<label><input type="radio" name="companies" value="Apple" <?php echo $apple ?>> Apple</label><br>
 				<span class="error"><?php echo $companyError ?></span><br>
 			</div>
@@ -276,10 +275,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			<div id="time" <?php if(!empty($timePerDayError)) { echo 'class="errorOutline"'; } ?>>
 				<p><label for="time_per_day">How long do you spend on the internet a day?</label></p>
 				<select id="time_per_day" name="time_per_day">
-				  <option name="time_per_day" value="-SELECT AN OPTION-">-SELECT AN OPTION-</option>
-				  <option name="time_per_day" value="1-2 Hours" <?php echo $firstOption ?>>1-2 Hours</option>
-				  <option name="time_per_day" value="2-10 Hours" <?php echo $secondOption ?>>2-10 Hours</option>
-				  <option name="time_per_day" value="FOREVERRRR" <?php echo $thirdOption ?>>FOREVERRRR</option>
+				  <option value="-SELECT AN OPTION-">-SELECT AN OPTION-</option>
+				  <option value="1-2 Hours" <?php echo $firstOption ?>>1-2 Hours</option>
+				  <option value="2-10 Hours" <?php echo $secondOption ?>>2-10 Hours</option>
+				  <option value="FOREVERRRR" <?php echo $thirdOption ?>>FOREVERRRR</option>
 				</select>
 				<br>
 				<span class="error"><?php echo $timePerDayError ?></span><br>
@@ -289,7 +288,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 				<p>If you wish to receive the submission as an email, enter email and check box below</p>
 				<label><input id="email_check" type="checkbox" name="email_check" value="send_email" <?php if($emailChecked == 1) { echo "checked"; } ?>>Send Email</label>
 				<span class="error"><?php echo $emailCheckError ?></span><br>
-				<input id="email_field" type="text" name="email_field" size=20 value="<?php echo $emailField ?>">
+				<input id="email_field" type="text" name="email_field" size="20" value="<?php echo $emailField ?>">
 				<span class="error"><?php echo $emailError ?></span><br>
 			</div>
 
@@ -332,7 +331,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			</div>
 			<?php endif; ?>
 			<div id="file-results">
-				<p>File saved to /surveyResults.txt</p>
+				<!-- Found way to print out server url from here http://stackoverflow.com/questions/189113/how-do-i-get-current-page-full-url-in-php-on-a-windows-iis-server -->
+				<p>File saved to <a href="<?php echo 'http://' . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"] ?>surveyResults.txt">server here</a></p>
 			</div>
 			<?php endif; ?>
 	</div>
