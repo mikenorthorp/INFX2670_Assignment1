@@ -48,14 +48,13 @@ $firstOption = "";
 $secondOption = "";
 $thirdOption = "";
 
-// If a form is submitted, set all variables to their entered inputs and 
-// sanatize them
+// If a form is submitted, santize user input fields
 if ($_SERVER["REQUEST_METHOD"] == "POST")
 {
-	$nameField = filter_input(INPUT_POST, 'name_field', FILTER_SANITIZE_SPECIAL_CHARS);
-	$likeField = filter_input(INPUT_POST, 'like_field', FILTER_SANITIZE_SPECIAL_CHARS);
-	$emailField = filter_input(INPUT_POST, 'email_field', FILTER_SANITIZE_SPECIAL_CHARS);
-	$timePerDayField = filter_input(INPUT_POST, 'time_per_day', FILTER_SANITIZE_SPECIAL_CHARS);
+	$nameField = htmlspecialchars(filter_input(INPUT_POST, 'name_field'));
+	$likeField = htmlspecialchars(filter_input(INPUT_POST, 'like_field'));
+	$emailField = htmlspecialchars(filter_input(INPUT_POST, 'email_field'));
+	$timePerDayField = htmlspecialchars(filter_input(INPUT_POST, 'time_per_day'));
 
 	// Check to make sure fields pass all validation
 
@@ -182,6 +181,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		// Create for the results above
 		$content = "Internet Survey Submission\n";
 		$content .= "Name: {$nameField}\n";
+		echo $likeField;
 		$content .= "Internet Likes: {$likeField}\n";
 		$content .= "Favorite Company: {$companyField}\n";
 
@@ -207,13 +207,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			$content .= "Email sent to {$emailField} with results\n";
 		}
 
-		// Save email content before adding divider
-		$emailContent = $content;
+		// Save email content before adding divider and make sure unicode characters arent
+		$emailContent = htmlspecialchars_decode($content);
+	
 		// End divider for file
 		$content .= "---------------------------------------------------\n\n";
 
 		// Write contents to file, append if already data inside, and lock file from being changed while writing
-		file_put_contents(RESULTS_FILE, $content, FILE_APPEND | LOCK_EX);
+		// Make sure unicode characters dont get printed
+		file_put_contents(RESULTS_FILE, htmlspecialchars_decode($content), FILE_APPEND | LOCK_EX);
 		// Make sure it is readable by all users
 		chmod(RESULTS_FILE, 0644);
 
